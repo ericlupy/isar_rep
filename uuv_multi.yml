@@ -1,0 +1,24 @@
+init: 
+  mode: uuv_mode_1
+  states:
+    - u0 in [0,0]
+    - y4 in [Y_LOWER,Y_UPPER]
+    - init_heading in [H_LOWER, H_UPPER]
+    - c in [0,0]
+    - d in [0,0]
+
+unsafe:
+  - mode: unsafe_globalpl
+    states:
+    - y4 <= 10
+  - mode: unsafe_globalph
+    states:
+    - y4 >= 50
+
+gnuplot: 'octagon y3, y4'
+adaptive steps: '{min 1e-6, max 0.01}'
+precision: '200'
+fixed orders: '4'
+print: 'on'
+max jumps: 300
+time: 1
