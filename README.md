@@ -1,5 +1,13 @@
 # Repeatability Package of ICCPS 2024 Submission
 
+### Step 0: Prepare required packages
+
+This is the repeatability package for ICCPS 2024 Submission "Repairing Learning-Enabled Controllers While Preserving What Works".
+To run our code, `Python >= 3.7.0` needs to be installed, and then the required packages shall be installed by
+```
+pip install -r requirements.txt
+```
+
 ### Step 1: Generate iniitial state space partitions
 
 First, we partition the initial state regions by calling
@@ -53,7 +61,7 @@ python incremental_repair.py --benchmark=<uuv|mc> --network=<control network yam
 ```
 This is the main repair algorithm. At every iteration, the network will be checkpointed as both yaml and PyTorch files if the selected region is repaired and no good sampled states are broken.
 The new STL robustness on all sampled states will also be checkpointed as csv files.
-Please expect that this will take a long time, around 1-2 days.
+Please expect that this will take a long time, around 1-2 days. Notice that the system dynamics informaion is encoded in `uuv_model_oneHz.mat`.
 
 ### Step 4: Verify the repaired controller
 The repaired network can be verified again using Verisig. It is the same operation as step 2, except that the input network yaml file into `verisig_call.py` is replaced by the repaired file.
