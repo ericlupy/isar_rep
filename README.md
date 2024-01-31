@@ -43,8 +43,9 @@ After all regions are verified, we can parse the results by calling
 ```
 python verisig_parse_results.py --benchmark=<uuv|mc> --network=<control network yaml file> --verisig_output_path=<directory of verisig output txt files> --initial_state_regions_csv=<csv file of partitioned regions from previous step>
 ```
+The verification of each region will be run in a subprocess, output to a txt log file.
 The verification results of all initial state regions will be parsed from Verisig logs and written to another csv file.
-
+Execution time of verifying each region will be recorded at the end of every txt log file.
 
 ### Step 3: Repair controller networks
 
@@ -65,6 +66,8 @@ This is the main repair algorithm. At every iteration, the network will be check
 The new STL robustness on all sampled states will also be checkpointed as csv files.
 Please expect that this will take a long time, around 1-2 days. Notice that the system dynamics informaion is encoded in `uuv_model_oneHz.mat`.
 Since the repaired network and the new STL robustness will be checkpointed after every iteration, we can always early stop and use one of the checkpoints as the output.
+Execution time of repairing each region will be displayed in the standard output.
+
 
 ### Step 4: Verify the repaired controller
 The repaired network can be verified again using Verisig. It is the same operation as step 2, except that the input network yaml file into `verisig_call.py` is replaced by the repaired file.

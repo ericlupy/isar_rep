@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9cd16869-1b22-49ca-a9f3-07948994f680" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generate_partition.py" beforeDir="false" afterPath="$PROJECT_DIR$/generate_partition.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/incremental_repair.py" beforeDir="false" afterPath="$PROJECT_DIR$/incremental_repair.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/incremental_repair_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/incremental_repair_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sample_states_in_regions.py" beforeDir="false" afterPath="$PROJECT_DIR$/sample_states_in_regions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
