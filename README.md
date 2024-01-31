@@ -1,4 +1,4 @@
-# Repeatability Package of ICCPS 2024 Submission
+# Repeatability Package of Incremental Simulated Annealing Repair
 
 ### Step 0: Prepare required packages
 
@@ -48,6 +48,8 @@ The verification results of all initial state regions will be parsed from Verisi
 
 ### Step 3: Repair controller networks
 
+**Please notice that due to randomness (from random sampling of initial states per region and random perturbation in simulated annealing), the output may not necessarily be the same as in our paper.**
+
 After verification on the broken controller is done, we repair the controller by Incremental Simulated Annealing Repair (ISAR). 
 First, we uniformly sample initial states from each region.
 ```
@@ -62,6 +64,7 @@ python incremental_repair.py --benchmark=<uuv|mc> --network=<control network yam
 This is the main repair algorithm. At every iteration, the network will be checkpointed as both yaml and PyTorch files if the selected region is repaired and no good sampled states are broken.
 The new STL robustness on all sampled states will also be checkpointed as csv files.
 Please expect that this will take a long time, around 1-2 days. Notice that the system dynamics informaion is encoded in `uuv_model_oneHz.mat`.
+Since the repaired network and the new STL robustness will be checkpointed after every iteration, we can always early stop and use one of the checkpoints as the output.
 
 ### Step 4: Verify the repaired controller
 The repaired network can be verified again using Verisig. It is the same operation as step 2, except that the input network yaml file into `verisig_call.py` is replaced by the repaired file.
@@ -79,6 +82,8 @@ It will end up with a plot like the follows.
 ![UUV result example](figures/uuv_broken_result.png)
 
 Configurations of this plot, such as title, ticks and size can be modified in `visualization.py`.
+This code will also output the number of the three types of regions,
+and the mean and std of min STL robustness in red, non-red and overall regions (as in our Table 1 and 3).
 
 
 

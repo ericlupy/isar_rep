@@ -65,6 +65,7 @@ def initial_sample(initial_state_regions_path, net_path, sampled_result_path, nu
 
     return
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--benchmark", help="uuv or mc", default="uuv")

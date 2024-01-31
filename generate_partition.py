@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
     if args.benchmark == 'uuv':
         test_set = uuv_partition()
-        df_test_set = pd.DataFrame(test_set, columns=['y_lo, y_hi, h_lo, h_hi'])
+        df_test_set = pd.DataFrame(test_set, columns=['y_lo', 'y_hi', 'h_lo', 'h_hi'])
         df_test_set.to_csv('uuv_initial_state_regions.csv')
     elif args.benchmark == 'mc':
         test_set = mc_partition()

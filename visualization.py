@@ -50,6 +50,33 @@ def mc_plot_colors(verisig_result_path, dict_color, title='MC Result'):
     return
 
 
+def check_min_robustness(sampled_result_path, dict_color):
+
+    def check_red(region_id):
+        return dict_color[region_id] == 'red'
+
+    def check_not_red(region_id):
+        return dict_color[region_id] == 'yellow' or dict_color[region_id] == 'green'
+
+    df_sample = pd.read_csv(sampled_result_path)
+    red_mask = df_sample['region'].apply(check_red)
+    df_red = df_sample[red_mask]
+    not_red_mask = df_sample['region'].apply(check_not_red)
+    df_not_red= df_sample[not_red_mask]
+
+    # Aggregate by min on robustness, group by region
+    df_red_min = df_red.join(df_red.groupby('region')['result'].agg(['min']), on='region')
+    print(f'Min robustness of all red regions have mean: {df_red_min["min"].mean()}, std: {df_red_min["min"].std()}')
+
+    df_not_red_min = df_not_red.join(df_not_red.groupby('region')['result'].agg(['min']), on='region')
+    print(f'Min robustness of all non-red regions have mean: {df_not_red_min["min"].mean()}, std: {df_not_red_min["min"].std()}')
+
+    df_overall_min = df_sample.join(df_sample.groupby('region')['result'].agg(['min']), on='region')
+    print(f'Min robustness overall have mean: {df_overall_min["min"].mean()}, std: {df_overall_min["min"].std()}')
+
+    return
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--benchmark", help="uuv or mc", default="uuv")
@@ -58,6 +85,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     dict_color = color_regions(args.verisig_result_path, args.sampled_result_path)
+
+    check_min_robustness(args.sampled_result_path, dict_color)
 
     if args.benchmark == 'uuv':
         uuv_plot_colors(args.verisig_result_path, dict_color)

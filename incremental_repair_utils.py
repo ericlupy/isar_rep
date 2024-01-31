@@ -232,7 +232,7 @@ def color_regions(verisig_result_path, sampled_result_path):
         else:
             dict_color[idx] = 'red'
             count_red += 1
-    print(f'Green, yellow, red: {count_green}, {count_yellow}, {count_red}')
+    print(f'Green, green hatches, red: {count_green}, {count_yellow}, {count_red}')
     return dict_color
 
 

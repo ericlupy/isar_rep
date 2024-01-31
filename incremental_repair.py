@@ -5,7 +5,7 @@ from incremental_repair_utils import *
 
 
 # Safeguarded simulated annealing, which attemps to repair one region while preserving others
-def safeguarded_simulated_annealing(region_id, net, bad_states, good_states, std=0.1, T=0.1, alpha=0.95, num_iter=100, benchmark='uuv'):
+def safeguarded_simulated_annealing(region_id, net, bad_states, good_states, std=0.1, T=0.1, alpha=0.95, num_iter=50, benchmark='uuv'):
 
     start_time = time.time()
 
@@ -96,11 +96,17 @@ def isar_main(verisig_result_path, sampled_result_path, net_path, output_path, b
 
     # Get good states - for computation efficiency, take one good state to be protected per region
     df_red_good = df_red[df_red['result'] >= 0.0]
-    df_red_good_approx = df_red_good.groupby('region').apply(lambda x: x.head(1)).reset_index(drop=True)
-    df_yellow_approx = df_yellow.groupby('region').apply(lambda x: x.head(1)).reset_index(drop=True)
-    df_green_approx = df_green.groupby('region').apply(lambda x: x.head(1)).reset_index(drop=True)
+    df_red_good_approx = df_red_good.groupby('region').apply(lambda x: x.head(5)).reset_index(drop=True)
+    df_yellow_approx = df_yellow.groupby('region').apply(lambda x: x.head(5)).reset_index(drop=True)
+    df_green_approx = df_green.groupby('region').apply(lambda x: x.head(5)).reset_index(drop=True)
     df_good_approx = pd.concat([df_red_good_approx, df_yellow_approx, df_green_approx])
-    good_states = [(row['pos'], row['vel'], row['result']) for index, row in df_good_approx.iterrows()]
+
+    if benchmark == 'uuv':
+        good_states = [(row['y'], row['h'], row['result']) for index, row in df_good_approx.iterrows()]
+    elif benchmark == 'mc':
+        good_states = [(row['pos'], row['vel'], row['result']) for index, row in df_good_approx.iterrows()]
+    else:
+        raise NotImplementedError
 
     # Load controller network to be repaired
     with open(net_path, 'rb') as f:
@@ -122,12 +128,20 @@ def isar_main(verisig_result_path, sampled_result_path, net_path, output_path, b
     # Simulated annealing main loop
     while len(region_robustness) > 0:
 
+        iter_start_time = time.time()
+
         print(f'Remaining regions to be repaired: {len(region_robustness)}')
 
         bad_region_id = region_robustness[0][0]  # get next region to repair
         df_region = df_sample[df_sample['region'] == bad_region_id]
         df_region_bad = df_region[df_region['result'] < 0.0]
-        bad_states = [(row['pos'], row['vel']) for index, row in df_region_bad.iterrows()]
+
+        if benchmark == 'uuv':
+            bad_states = [(row['y'], row['h']) for index, row in df_region_bad.iterrows()]
+        elif benchmark == 'mc':
+            bad_states = [(row['pos'], row['vel']) for index, row in df_region_bad.iterrows()]
+        else:
+            raise NotImplementedError
 
         if bad_region_id in prev_regions:
             print('Already worked on this region, pass')
@@ -180,10 +194,10 @@ def isar_main(verisig_result_path, sampled_result_path, net_path, output_path, b
                 else:
                     raise NotImplementedError
 
-            min_good_state_robustness = np.min(h_robustness_good)
-            print(f'Min good states robustness after sim annealing: {min_good_state_robustness}')
+            avg_good_state_robustness = np.mean(h_robustness_good)
+            print(f'Avg good states robustness after sim annealing: {avg_good_state_robustness}')
 
-            if min_good_state_robustness >= 0.0:
+            if avg_good_state_robustness >= 0.5:
                 print('Good region above green threshold, proceed')
 
                 # Checkpoint both yaml and torch models
@@ -219,6 +233,7 @@ def isar_main(verisig_result_path, sampled_result_path, net_path, output_path, b
 
         prev_regions += [bad_region_id]
         iter_num += 1
+        print(f'Iteration time: {time.time() - iter_start_time}')
 
     print(f'Total time: {time.time() - start_time}')
     return
