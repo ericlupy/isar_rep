@@ -11,7 +11,6 @@ We wrap up the application as a Docker image. To start the Docker container, run
 docker run -d --name isar_rep_env isar_rep
 ```
 This will start the Docker container by installing the Python packages needed and Verisig. 
-Please note that this requires a Linux OS, with `Ubuntu >= 16.04` recommended.
 
 After the Docker container is started, it will wait for manual execution of our scripts as follows.
 
