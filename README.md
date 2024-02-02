@@ -7,8 +7,11 @@ Please note: the following instructions are for the Dockerized application. If D
 and find the non-Dockerized version under the `no_docker` branch and follow the other instruction to set up the environment manually.
 
 **There is no need to pull any file from this repo.** The Docker image is available on our [Docker Hub repo](https://hub.docker.com/repository/docker/ericlupy/isar_rep).
-Again, there is no need to pull anything from there either. To run our code, simply install [Docker](https://www.docker.com/) and in your command line terminal, start our Docker image
-with interactive mode
+Again, there is no need to pull anything from there either. To run our code, simply install [Docker](https://www.docker.com/) and in your command line terminal, pull our Docker image by
+```
+docker pull ericlupy/isar_rep:latest
+```
+and then run the image in interactive mode by
 ```
 docker run -it ericlupy/isar_rep /bin/bash
 ```
