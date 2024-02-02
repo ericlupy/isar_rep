@@ -12,11 +12,12 @@ with interactive mode
 ```
 docker run -it ericlupy/isar_rep /bin/bash
 ```
-This will start a Docker container that loads our image, and an interactive Linux shell will be available.
-The Docker image includes `Ubuntu 20.0.4`, `Python 3.8`, Verisig, and the required packages. After you enter the interactive shell,
+This will start a Docker container that loads our image, and an interactive Linux shell will be available. The shell will be similar to this figure.
+![Docker interactive shell](figures/docker_shell_example.png)
+This Docker image includes `Ubuntu 20.0.4`, `Python 3.8`, Verisig, and the required packages. After entering the interactive shell,
 please follow the instructions below.
 
-### Step 1: Generate iniitial state space partitions
+### Step 1: Generate initial state space partitions
 
 First, we partition the initial state regions by calling
 
