@@ -22,7 +22,7 @@ please follow the instructions below.
 First, we partition the initial state regions by calling
 
 ```
-python generate_partition.py --benchmark=<uuv|mc>
+python3 generate_partition.py --benchmark=<uuv|mc>
 ```
 
 This will generate a partition of initial state space for UUV or MC. The partition is saved as a csv file, with each rectangular
@@ -40,14 +40,14 @@ The initial broken controller networks are in `/controllers`. Verisig requires `
 With Verisig installed and all files prepared, we call the following code for parallel verification on initial state regions.
 
 ```
-python verisig_call.py --benchmark=<uuv|mc> --network=<control network yaml file> --verisig_path=<directory where verisig is installed> --verisig_output_path=<directory to write verisig output txt files> --cpu_ratio=<percentage of cpus to be used, between 0 and 1> --initial_state_regions_path=<csv file of partitioned regions from previous step>
+python3 verisig_call.py --benchmark=<uuv|mc> --network=<control network yaml file> --verisig_path=<directory where verisig is installed> --verisig_output_path=<directory to write verisig output txt files> --cpu_ratio=<percentage of cpus to be used, between 0 and 1> --initial_state_regions_path=<csv file of partitioned regions from previous step>
 ```
 
 Warning: Running Verisig parallel verification may take a very long time (please expect more than 12 hours), depending on CPU utilization. Verification log of each initial state region will be recorded in a txt file in the specified output directory. This will take a large storage (please expect over 1GB).
 
 After all regions are verified, we can parse the results by calling
 ```
-python verisig_parse_results.py --benchmark=<uuv|mc> --network=<control network yaml file> --verisig_output_path=<directory of verisig output txt files> --initial_state_regions_csv=<csv file of partitioned regions from previous step>
+python3 verisig_parse_results.py --benchmark=<uuv|mc> --network=<control network yaml file> --verisig_output_path=<directory of verisig output txt files> --initial_state_regions_csv=<csv file of partitioned regions from previous step>
 ```
 The verification of each region will be run in a subprocess, output to a txt log file.
 The verification results of all initial state regions will be parsed from Verisig logs and written to another csv file.
@@ -60,13 +60,13 @@ Execution time of verifying each region will be recorded at the end of every txt
 After verification on the broken controller is done, we repair the controller by Incremental Simulated Annealing Repair (ISAR). 
 First, we uniformly sample initial states from each region.
 ```
-python sample_states_in_regions.py --benchmark=<uuv|mc> --network=<control network yaml to be repaired> --initial_state_regions_path=<csv file of partitioned regions from previous step> --sampled_result_path=<ampling result csv to be written> --num_samples_per_region=<a positive int, by default 10>
+python3 sample_states_in_regions.py --benchmark=<uuv|mc> --network=<control network yaml to be repaired> --initial_state_regions_path=<csv file of partitioned regions from previous step> --sampled_result_path=<ampling result csv to be written> --num_samples_per_region=<a positive int, by default 10>
 ```
 This will sample a fixed number of initial states per region and obtain STL robustness of each sampled state. The result will be written in the specified sampled result path as a csv.
 
 Next, with initial states sampled, we run the ISAR algorithm by calling
 ```
-python incremental_repair.py --benchmark=<uuv|mc> --network=<control network yaml to be repaired> --verisig_result_path=<verisig result csv> --sampled_result_path=<sampling result csv> --output_path=<directory to all output files>
+python3 incremental_repair.py --benchmark=<uuv|mc> --network=<control network yaml to be repaired> --verisig_result_path=<verisig result csv> --sampled_result_path=<sampling result csv> --output_path=<directory to all output files>
 ```
 This is the main repair algorithm. At every iteration, the network will be checkpointed as both yaml and PyTorch files if the selected region is repaired and no good sampled states are broken.
 The new STL robustness on all sampled states will also be checkpointed as csv files.
