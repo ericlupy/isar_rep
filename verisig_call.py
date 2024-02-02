@@ -71,6 +71,7 @@ if __name__ == '__main__':
     # Load initial state regions
     df_initial_state_regions = pd.read_csv(args.initial_state_regions_path)
     initial_state_regions = df_initial_state_regions.values.tolist()
+    initial_state_regions = [x[1:] for x in initial_state_regions]
 
     if args.benchmark == 'uuv':
 
