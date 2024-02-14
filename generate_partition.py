@@ -50,10 +50,10 @@ if __name__ == '__main__':
     if args.benchmark == 'uuv':
         test_set = uuv_partition()
         df_test_set = pd.DataFrame(test_set, columns=['y_lo', 'y_hi', 'h_lo', 'h_hi'])
-        df_test_set.to_csv('uuv_initial_state_regions.csv')
+        df_test_set.to_csv('uuv_initial_state_regions.csv', index=False)
     elif args.benchmark == 'mc':
         test_set = mc_partition()
         df_test_set = pd.DataFrame(test_set, columns=['pos_lo', 'pos_hi', 'vel_lo', 'vel_hi'])
-        df_test_set.to_csv('mc_initial_state_regions.csv')
+        df_test_set.to_csv('mc_initial_state_regions.csv', index=False)
     else:
         raise NotImplementedError

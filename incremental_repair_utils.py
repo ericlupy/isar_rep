@@ -308,5 +308,5 @@ def check_samples(repaired_net_path, sampled_result_path, sample_repaired_result
     else:
         raise NotImplementedError
 
-    df_sample_repaired.to_csv(sample_repaired_result_path)
+    df_sample_repaired.to_csv(sample_repaired_result_path, index=False)
     return

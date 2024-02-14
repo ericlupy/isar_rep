@@ -1,5 +1,10 @@
 # Repeatability Package of Incremental Simulated Annealing Repair
 
+### Update 02/14/2024
+We have fixed the following bugs:
+
+1. Reading and writing to `.csv` files using `pandas` now avoids creating an additional index column, which caused errors before.
+
 ### Step 0: Start the Docker image
 
 This is the repeatability package for ICCPS 2024 Submission "Repairing Learning-Enabled Controllers While Preserving What Works".
