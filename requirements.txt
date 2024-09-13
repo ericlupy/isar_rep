@@ -4,3 +4,6 @@ torch
 pyyaml
 matplotlib
 scipy
+gym == 0.26.2
+stable_baselines3
+casadi

@@ -161,22 +161,28 @@ def isar_main(verisig_result_path, sampled_result_path, net_path, output_path, b
         net_updated = safeguarded_simulated_annealing(bad_region_id, net, bad_states, good_states, benchmark=benchmark)
 
         # Check robustness of bad states
+        h_robustness_bad_prev = []
         h_robustness_bad = []
         repaired_states = []
         for bad_state in bad_states:
             if benchmark == 'uuv':
                 _, traj_y_bad = uuv_simulate(net=net_updated, init_global_heading_deg=bad_state[0], init_pos_y=bad_state[1])
                 robustness = uuv_robustness(traj_y_bad)
+                _, traj_y_bad_prev = uuv_simulate(net=net, init_global_heading_deg=bad_state[0], init_pos_y=bad_state[1])
+                robustness_prev = uuv_robustness(traj_y_bad_prev)
             elif benchmark == 'mc':
                 traj_pos_bad, _ = mc_simulate(net=net_updated, pos_0=bad_state[0], vel_0=bad_state[1])
                 robustness = mc_robustness(traj_pos_bad)
+                traj_pos_bad_prev, _ = mc_simulate(net=net, pos_0=bad_state[0], vel_0=bad_state[1])
+                robustness_prev = mc_robustness(traj_pos_bad_prev)
             else:
                 raise NotImplementedError
             if robustness >= 0.0:
                 repaired_states += [bad_state]
             h_robustness_bad += [robustness]
+            h_robustness_bad_prev += [robustness_prev]
 
-        print(f'Avg bad states robustness after sim annealing: {np.mean(h_robustness_bad)}')
+        print(f'Avg bad states robustness before and after sim annealing: {np.mean(h_robustness_bad_prev)}, {np.mean(h_robustness_bad)}')
 
         if len(repaired_states) > 0:
             print('Exist a bad state that is repaired')
@@ -197,8 +203,8 @@ def isar_main(verisig_result_path, sampled_result_path, net_path, output_path, b
             avg_good_state_robustness = np.mean(h_robustness_good)
             print(f'Avg good states robustness after sim annealing: {avg_good_state_robustness}')
 
-            if avg_good_state_robustness >= 0.5:
-                print('Good region above green threshold, proceed')
+            if np.mean(h_robustness_bad_prev) <= np.mean(h_robustness_bad):
+                print('Bad states are improved, proceed')
 
                 # Checkpoint both yaml and torch models
                 repaired_net_path = os.path.join(output_path, f'tanh_iter_{iter_num}_region_{bad_region_id}.pt')

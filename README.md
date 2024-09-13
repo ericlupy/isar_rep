@@ -1,5 +1,9 @@
 # Repeatability Package of Incremental Simulated Annealing Repair
 
+### Update 09/12/2024
+We have added the code of baseline methods, and re-structured the code correspondingly.
+
+
 ### Update 02/14/2024
 We have fixed the following bugs:
 
@@ -7,7 +11,7 @@ We have fixed the following bugs:
 
 ### Step 0: Start the Docker image
 
-This is the repeatability package for ICCPS 2024 Submission "Repairing Learning-Enabled Controllers While Preserving What Works".
+This is the repeatability package for ICCPS 2024 Submission "Repairing Learning-Enabled Controllers While Preserving What Works", and its extension projects.
 Please note: the following instructions are for the Dockerized application. If Docker does not work, please visit our [GitHub page](https://github.com/ericlupy/isar_rep)
 and find the non-Dockerized version under the `no_docker` branch and follow the other instruction to set up the environment manually.
 
@@ -102,5 +106,35 @@ Configurations of this plot, such as title, ticks and size can be modified in `v
 This code will also output the number of the three types of regions,
 and the mean and std of min STL robustness in red, non-red and overall regions (as in our Table 1 and 3).
 
+### Baseline Methods
+We have implemented command line interfaces to run the baseline methods for both UUV and MC. Here, we use UUV as an example. 
+Notice that these baseline methods need the information of bad initial states in the broken network, so please prepare sampled result csv file using `sample_states_in_regions.py` on the broken network.
 
+- STLGym
+```
+python uuv_baselines/uuv_stlgym.py --algo=<ppo|a2c|sac> --steps=<max total training steps> --network=<control network yaml to be repaired> --sampled_result_path=<sampling result csv of the broken network>
+```
 
+- F-MDP
+```
+python uuv_baselines/uuv_fmdp.py --algo=<ppo|a2c|sac> --steps=<max total training steps> --network=<control network yaml to be repaired> --sampled_result_path=<sampling result csv of the broken network>
+```
+
+- Tube MPC Shielding
+```
+python uuv_baselines/uuv_mpc_shield.py --sampled_result_path=<sampling result csv of the broken network>
+```
+
+- MIQP imitation
+```
+python uuv_baselines/uuv_imitation.py --data_path=<path to pkl file by tube MPC shielding> --network=<control network yaml to be repaired> --epochs=<max number of epochs> --if_miqp=True
+```
+
+- Minimally deviating repair imitation
+```
+python uuv_baselines/uuv_imitation.py --data_path=<path to pkl file by tube MPC shielding> --network=<control network yaml to be repaired> --epochs=<max number of epochs> --if_miqp=False
+```
+
+All these baseline methods, except for tube MPC shielding, output a `.yml` file and a `.pth` file for the repaired network. The `.yml` file can then be input to Verisig for verification as in ISAR.
+Notice that tube MPC shielding does not output a repaired network. Instead, it outputs how many broken initial states are repaired, and how many good initial states are broken due to false intervention.
+Tube MPC shielding also outputs a `.pkl` file, which is the supervised learning data used by imitation learning.
